@@ -1,0 +1,82 @@
+body {
+    font-family: 'Nunito', Arial, sans-serif;
+    background: #f8fafc;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background: #0d6efd;
+    color: #fff;
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: transparent;
+    padding: 0 1rem;
+}
+
+.card {
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    border: none;
+}
+
+.table {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: #fff;
+}
+.table thead th {
+    background: #f3f6fa;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+}
+.table-hover tbody tr:hover {
+    background: #f6faff;
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background: #0d6efd;
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-primary:hover {
+    background: #0b5ed7;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 70%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
