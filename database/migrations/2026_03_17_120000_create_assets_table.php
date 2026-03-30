@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->string('uuid')->unique(); // Serial number or generated value
             $table->string('name'); // Asset name
+            $table->string('asset_tag')->unique(); // New asset_tag column
             $table->unsignedBigInteger('asset_model_id')->nullable();
             $table->string('serial_number')->nullable();
             $table->text('description')->nullable();

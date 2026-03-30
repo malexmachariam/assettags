@@ -80,7 +80,8 @@
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{ route('assets.create') }}">Record New Asset</a>
+                                    <a class="nav-link" href="{{ route('assets.create') }}">Record Single New Asset</a>
+                                    <a class="nav-link" href="{{ route('assets.upload') }}">Upload Multiple Assets With S/No</a>
                                     <a class="nav-link" href="{{ route('home') }}">View All Assets</a>
                                 </nav>
                             </div>
@@ -96,6 +97,9 @@
                                     </a>
                                     <a class="nav-link" href="{{ route('asset-models.index') }}">
                                         Asset Models
+                                    </a>
+                                    <a class="nav-link" href="{{ route('batches.index') }}">
+                                        Batches
                                     </a>
                                    
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"  aria-expanded="false" aria-controls="pagesCollapseError">
@@ -126,47 +130,7 @@
                 <main>
                     <div class="container-fluid px-4">
                         <h2 class="mt-4">Asset Tag Register</h2>
-                        {{-- <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">Asset Tag Register</li>
-                        </ol> --}}
-                        {{-- <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Primary Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Warning Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Success Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Danger Card</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
+                      
                         
                         @yield('content')
                     </div>

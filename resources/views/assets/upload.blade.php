@@ -9,7 +9,7 @@
     @endif
 
     <div class="row justify-content-center">
-        <div class="col-lg-6 mb-4">
+        {{-- <div class="col-lg-6 mb-4">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">Record New Asset</div>
                 <div class="card-body">
@@ -48,9 +48,9 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-lg-6 mb-4">
+        {{-- <div class="col-lg-6 mb-4">
             <div class="card shadow">
                 <div class="card-header bg-success text-white">Bulk Generate Non-Serial Assets</div>
                 <div class="card-body">
@@ -89,7 +89,7 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-lg-12 mb-4">
             <div class="card shadow">
