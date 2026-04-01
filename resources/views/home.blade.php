@@ -34,8 +34,8 @@
                                 <td style="max-width: 250px; white-space: pre-line;">{{ $asset->description ?? '—' }}</td>
                                 <td>
                                     <a href="{{ route('assets.show', $asset) }}" class="btn btn-sm btn-outline-info">View</a>
-                                    <button type="button" class="btn btn-sm btn-info ms-1" onclick="showAssetTagModal({{ $asset->id }})">Show Tag</button>
-                                    <a href="{{ route('assets.tag.pdf', $asset) }}" class="btn btn-sm btn-outline-danger ms-1" target="_blank" rel="noopener">Show PDF</a>
+                                    {{-- <button type="button" class="btn btn-sm btn-info ms-1" onclick="showAssetTagModal({{ $asset->id }})">Show Tag</button> --}}
+                                    <a href="{{ route('assets.tag.pdf', $asset) }}" class="btn btn-sm btn-outline-danger ms-1" target="_blank" rel="noopener">Show Tag</a>
                                 </td>
                             </tr>
                         @empty
@@ -47,11 +47,6 @@
                 </table>
             </div>
         </div>
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mb-5">
-        {{ $assets->links() }}
     </div>
 
 

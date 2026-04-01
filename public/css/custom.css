@@ -80,3 +80,18 @@ input[type="password"] {
     color: #842029;
     border: 1px solid #f5c2c7;
 }
+
+/* Simple DataTables pagination fix */
+.dataTable-wrapper .dataTable-pagination ul li a {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.6rem;
+    line-height: 1.5;
+    text-decoration: none;
+    display: inline-block;
+}
+.dataTable-wrapper .dataTable-pagination ul li a svg {
+    width: 12px;
+    height: 12px;
+    vertical-align: middle;
+}
+

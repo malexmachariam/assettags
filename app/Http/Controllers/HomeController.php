@@ -23,7 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $assets = \App\Models\Asset::orderByDesc('created_at')->paginate(10);
+        $assets = \App\Models\Asset::with('assetModel')->orderByDesc('created_at')->get();
         return view('home', compact('assets'));
     }
 }
