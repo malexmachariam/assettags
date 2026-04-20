@@ -20,6 +20,8 @@ class Asset extends Model
         'batch_id',
         'serial_number',
         'asset_tag', // Include asset_tag in fillable fields
+        'allocated_to',
+        'allocated_name',
     ];
 
     public function assetModel()

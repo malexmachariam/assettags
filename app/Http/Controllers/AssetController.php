@@ -168,7 +168,7 @@ class AssetController extends Controller
 
         $validated = $request->validate([
             'bulk_asset_model_id' => ['required', 'exists:asset_models,id'],
-            'bulk_quantity' => ['required', 'integer', 'min:1', 'max:200'],
+            'bulk_quantity' => ['required', 'integer', 'min:1', 'max:1000'],
             'bulk_description' => ['nullable', 'string'],
         ]);
 
@@ -205,48 +205,73 @@ class AssetController extends Controller
 
     public function importSerialCsv(Request $request)
     {
+
+        Log::info('importSerialCsv: Start import', ['user_id' => $request->user()->id ?? null]);
         $activeBatch = Batch::active()->first();
 
+
         if (! $activeBatch) {
+            Log::warning('importSerialCsv: No active batch found');
             return back()
                 ->withErrors(['batch' => 'Create and activate a batch before importing assets.'])
                 ->withInput();
         }
 
-        $validated = $request->validate([
-            'serial_asset_model_id' => ['required', 'exists:asset_models,id'],
-            'serial_csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
-            'serial_description' => ['nullable', 'string'],
-        ]);
 
-        $assetModel = AssetModel::with('category')->findOrFail($validated['serial_asset_model_id']);
+        try {
+            $validated = $request->validate([
+                'serial_asset_model_id' => ['required', 'exists:asset_models,id'],
+                'serial_csv' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+                'serial_description' => ['nullable', 'string'],
+            ]);
+        } catch (\Exception $e) {
+            Log::error('importSerialCsv: Validation failed', ['error' => $e->getMessage(), 'input' => $request->all()]);
+            throw $e;
+        }
+
+
+        try {
+            $assetModel = AssetModel::with('category')->findOrFail($validated['serial_asset_model_id']);
+        } catch (\Exception $e) {
+            Log::error('importSerialCsv: AssetModel not found', ['id' => $validated['serial_asset_model_id'], 'error' => $e->getMessage()]);
+            throw $e;
+        }
+
 
         if (! $assetModel->require_serial_number) {
+            Log::warning('importSerialCsv: Asset model does not require serial number', ['id' => $assetModel->id]);
             return back()
                 ->withErrors(['serial_asset_model_id' => 'Please select an asset model that requires serial numbers.'])
                 ->withInput();
         }
 
+
         $file = $request->file('serial_csv');
-        $handle = fopen($file->getRealPath(), 'r');
+        $handle = @fopen($file->getRealPath(), 'r');
 
         if ($handle === false) {
+            Log::error('importSerialCsv: Unable to open uploaded CSV', ['path' => $file->getRealPath()]);
             return back()
                 ->withErrors(['serial_csv' => 'Unable to read the uploaded CSV file.'])
                 ->withInput();
         }
 
+
         $serials = [];
         $isFirstDataRow = true;
+        $rowCount = 0;
 
         while (($row = fgetcsv($handle)) !== false) {
+            $rowCount++;
             if (! is_array($row)) {
+                Log::warning('importSerialCsv: Non-array row in CSV', ['row' => $rowCount]);
                 continue;
             }
 
             $firstCell = trim((string) ($row[0] ?? ''));
 
             if ($firstCell === '') {
+                Log::info('importSerialCsv: Empty cell in CSV', ['row' => $rowCount]);
                 continue;
             }
 
@@ -255,6 +280,7 @@ class AssetController extends Controller
                 $headerCandidates = ['serial', 'serialnumber', 'serialno', 'serial_number', 'sn'];
 
                 if (in_array($normalizedHeader, $headerCandidates, true)) {
+                    Log::info('importSerialCsv: Detected header row', ['header' => $firstCell]);
                     $isFirstDataRow = false;
                     continue;
                 }
@@ -265,23 +291,28 @@ class AssetController extends Controller
         }
 
         fclose($handle);
+        Log::info('importSerialCsv: Parsed serials from CSV', ['count' => count($serials)]);
+
 
         if (empty($serials)) {
+            Log::warning('importSerialCsv: No serials found in CSV');
             return back()
                 ->withErrors(['serial_csv' => 'The CSV has no serial numbers to import.'])
                 ->withInput();
         }
 
+
         $serialCollection = collect($serials);
         $duplicateInFile = $serialCollection->duplicates()->unique()->values();
-
         if ($duplicateInFile->isNotEmpty()) {
+            Log::warning('importSerialCsv: Duplicate serials in CSV', ['duplicates' => $duplicateInFile->all()]);
             return back()
                 ->withErrors([
                     'serial_csv' => 'Duplicate serial number(s) found in CSV: ' . $duplicateInFile->take(10)->implode(', '),
                 ])
                 ->withInput();
         }
+
 
         $existingSerials = Asset::whereNotNull('serial_number')
             ->pluck('serial_number')
@@ -291,6 +322,7 @@ class AssetController extends Controller
             ->values();
 
         if ($existingSerials->isNotEmpty()) {
+            Log::warning('importSerialCsv: Existing serials found in DB', ['existing' => $existingSerials->all()]);
             return back()
                 ->withErrors([
                     'serial_csv' => 'Serial number(s) already exist: ' . $existingSerials->take(10)->implode(', '),
@@ -298,23 +330,32 @@ class AssetController extends Controller
                 ->withInput();
         }
 
+
         $description = $validated['serial_description'] ?? null;
 
-        DB::transaction(function () use ($assetModel, $activeBatch, $description, $serialCollection) {
-            $numbers = Asset::nextSequentialAssetNumbers($serialCollection->count());
+        try {
+            DB::transaction(function () use ($assetModel, $activeBatch, $description, $serialCollection) {
+                $numbers = Asset::nextSequentialAssetNumbers($serialCollection->count());
 
-            foreach ($serialCollection->values() as $index => $serialNumber) {
-                Asset::create([
-                    'uuid' => (string) Str::uuid(),
-                    'asset_tag' => 'ODPP/' . str_pad((string) $numbers[$index], 6, '0', STR_PAD_LEFT),
-                    'name' => $assetModel->name,
-                    'description' => $description,
-                    'asset_model_id' => $assetModel->id,
-                    'batch_id' => $activeBatch->id,
-                    'serial_number' => $serialNumber,
-                ]);
-            }
-        });
+                foreach ($serialCollection->values() as $index => $serialNumber) {
+                    Asset::create([
+                        'uuid' => (string) Str::uuid(),
+                        'asset_tag' => 'ODPP/' . str_pad((string) $numbers[$index], 6, '0', STR_PAD_LEFT),
+                        'name' => $assetModel->name,
+                        'description' => $description,
+                        'asset_model_id' => $assetModel->id,
+                        'batch_id' => $activeBatch->id,
+                        'serial_number' => $serialNumber,
+                    ]);
+                }
+            });
+            Log::info('importSerialCsv: Assets imported successfully', ['count' => $serialCollection->count()]);
+        } catch (\Exception $e) {
+            Log::error('importSerialCsv: DB transaction failed', ['error' => $e->getMessage()]);
+            return back()
+                ->withErrors(['serial_csv' => 'Failed to import assets: ' . $e->getMessage()])
+                ->withInput();
+        }
 
         return redirect()->route('home')
             ->with('success', $serialCollection->count() . ' serial-number assets imported successfully.');
@@ -346,11 +387,22 @@ class AssetController extends Controller
         //
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Allocate asset to person, station, division, or department.
      */
-    public function destroy(Asset $asset)
+    public function allocate(Request $request, Asset $asset)
     {
-        //
+        $validated = $request->validate([
+            'allocated_to' => 'required|in:person,station,division,department',
+            'allocated_name' => 'required|string|max:255',
+        ]);
+
+        $asset->allocated_to = $validated['allocated_to'];
+        $asset->allocated_name = $validated['allocated_name'];
+        $asset->save();
+
+        return redirect()->route('assets.show', $asset)
+            ->with('success', 'Asset allocated successfully.');
     }
 }

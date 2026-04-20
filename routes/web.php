@@ -32,9 +32,15 @@ Route::post('/assets/bulk-store', [App\Http\Controllers\AssetController::class, 
 Route::get('/assets/upload', [App\Http\Controllers\AssetController::class, 'upload'])->name('assets.upload');
 Route::post('/assets/import-serial-csv', [App\Http\Controllers\AssetController::class, 'importSerialCsv'])->name('assets.import-serial-csv');
 Route::resource('assets', App\Http\Controllers\AssetController::class)->only(['create', 'store', 'show']);
+
+// Allocation route
+Route::post('/assets/{asset}/allocate', [App\Http\Controllers\AssetController::class, 'allocate'])->name('assets.allocate');
 Route::get('/assets/{asset}/tag/pdf', [App\Http\Controllers\AssetController::class, 'tagPdf'])->name('assets.tag.pdf');
 
 // Auth::routes();
+
+// Route to trigger migrations (for cPanel environments without terminal access)
+Route::get('/run-migrate', [App\Http\Controllers\MigrateController::class, 'migrate'])->middleware('auth');
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
