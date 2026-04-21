@@ -72,7 +72,7 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 All Assets
                             </a>
-                             {{-- @if(Auth::user() && Auth::user()->role === 'super_admin') --}}
+                             @if(Auth::user() && Auth::user()->role === 'super_admin')
                             <div class="sb-sidenav-menu-heading">Assets</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -116,7 +116,7 @@
                                 <a class="nav-link" href="{{ route('users.index') }}">
                                     Users
                                 </a>
-                            {{-- @endif --}}
+                            @endif
 
                             {{-- <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="charts.html">
