@@ -57,7 +57,17 @@
 
                     <div class="mt-3 d-flex gap-2 flex-wrap">
                         <a href="{{ route('assets.tag.pdf', $asset) }}" target="_blank" rel="noopener" class="btn btn-outline-danger">Show Tag PDF</a>
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#allocateModal">Allocate</button>
+                        @if(Auth::user() && (Auth::user()->role === 'super_admin') or (Auth::user()->role === 'allocator'))
+                            @if($asset->allocated_to && $asset->allocated_name)
+                                <form method="POST" action="{{ route('assets.deallocate', $asset) }}" class="d-inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-outline-warning">Deallocate</button>
+                                </form>
+                            @else
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#allocateModal">Allocate</button>
+                        @endif
+                        @endif
                         <a href="{{ route('home') }}" class="btn btn-outline-secondary">Back Home</a>
                     </div>
 

@@ -36,6 +36,8 @@ Route::resource('assets', App\Http\Controllers\AssetController::class)->only(['c
 // Allocation route
 Route::post('/assets/{asset}/allocate', [App\Http\Controllers\AssetController::class, 'allocate'])->name('assets.allocate');
 Route::get('/assets/{asset}/tag/pdf', [App\Http\Controllers\AssetController::class, 'tagPdf'])->name('assets.tag.pdf');
+// Deallocate route
+Route::patch('/assets/{asset}/deallocate', [App\Http\Controllers\AssetController::class, 'deallocate'])->name('assets.deallocate');
 
 // Auth::routes();
 
@@ -52,3 +54,14 @@ Route::resource('asset-models', App\Http\Controllers\AssetModelController::class
 
 // Asset Tag AJAX route
 Route::get('/assets/{asset}/tag', [App\Http\Controllers\AssetController::class, 'tag'])->name('assets.tag');
+
+
+// User management (super admin only)
+Route::middleware(['auth', 'superadmin'])->group(function () {
+	Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+	Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+	Route::patch('/users/{user}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
+	Route::patch('/users/{user}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
+	Route::delete('/users/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+	Route::patch('/users/{user}/role', [App\Http\Controllers\UserController::class, 'updateRole'])->name('users.updateRole');
+});

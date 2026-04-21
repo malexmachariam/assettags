@@ -6,7 +6,9 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="mb-0">All Assets</h3>
-        <a href="{{ route('assets.create') }}" class="btn btn-primary shadow">Add New Asset</a>
+         @if(Auth::user() && Auth::user()->role === 'super_admin')
+         <a href="{{ route('assets.create') }}" class="btn btn-primary shadow">Add New Asset</a>
+         @endif
     </div>
 
     <!-- Assets Table -->
@@ -19,7 +21,10 @@
                             <th style="width: 60px;">#</th>
                             <th>Name</th>
                             <th>Asset Model</th>
+                            <th>Serial Number</th>
                             <th>Asset Tag</th>
+                            <th>Allocated </th>
+                            <th>Allocated To </th>
                             <th>Description</th>
                             <th style="width: 140px;">Actions</th>
                         </tr>
@@ -30,7 +35,10 @@
                                 <td class="text-muted">{{ $asset->id }}</td>
                                 <td><strong>{{ $asset->name }}</strong></td>
                                 <td style="font-size: 0.95em; word-break: break-all;">{{ $asset->assetModel->name ?? '—' }}</td>
+                                <td style="font-size: 0.95em; word-break: break-all;">{{ $asset->serial_number ?? '—' }}</td>
                                 <td style="font-size: 0.95em; word-break: break-all;">{{ $asset->asset_tag }}</td>
+                                <td style="font-size: 0.95em; word-break: break-all;">{{ $asset->allocated_to }}</td>
+                                <td style="font-size: 0.95em; word-break: break-all;">{{ $asset->allocated_name }}</td>
                                 <td style="max-width: 250px; white-space: pre-line;">{{ $asset->description ?? '—' }}</td>
                                 <td>
                                     <a href="{{ route('assets.show', $asset) }}" class="btn btn-sm btn-outline-info">View</a>

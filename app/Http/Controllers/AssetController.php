@@ -405,4 +405,17 @@ class AssetController extends Controller
         return redirect()->route('assets.show', $asset)
             ->with('success', 'Asset allocated successfully.');
     }
+        /**
+     * Deallocate asset (clear allocated_to and allocated_name).
+     */
+    public function deallocate(Request $request, Asset $asset)
+    {
+        $asset->allocated_to = null;
+        $asset->allocated_name = null;
+        $asset->save();
+
+        return redirect()->route('assets.show', $asset)
+            ->with('success', 'Asset deallocated successfully.');
+    }
+
 }

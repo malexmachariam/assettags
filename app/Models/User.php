@@ -21,7 +21,30 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'active',
     ];
+        public function isActive()
+        {
+            return (bool) $this->active;
+        }
+    /**
+     * Role helpers
+     */
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAllocator()
+    {
+        return $this->role === 'allocator';
+    }
+
+    public function isNormalUser()
+    {
+        return $this->role === 'user';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
