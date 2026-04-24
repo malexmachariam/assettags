@@ -57,11 +57,13 @@ Route::get('/assets/{asset}/tag', [App\Http\Controllers\AssetController::class, 
 
 
 // User management (super admin only)
-Route::middleware(['auth', 'superadmin'])->group(function () {
+ Route::middleware(['auth', 'superadmin'])->group(function () {
 	Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
 	Route::post('/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
 	Route::patch('/users/{user}/activate', [App\Http\Controllers\UserController::class, 'activate'])->name('users.activate');
 	Route::patch('/users/{user}/deactivate', [App\Http\Controllers\UserController::class, 'deactivate'])->name('users.deactivate');
 	Route::delete('/users/{user}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
 	Route::patch('/users/{user}/role', [App\Http\Controllers\UserController::class, 'updateRole'])->name('users.updateRole');
-});
+ });
+// Export asset to Word
+Route::get('/assets/{asset}/export-word', [App\Http\Controllers\AssetWordExportController::class, 'export'])->name('assets.export-word');

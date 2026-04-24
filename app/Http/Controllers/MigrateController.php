@@ -9,10 +9,13 @@ class MigrateController extends Controller
 {
     public function migrate(Request $request)
     {
+        // Run composer require phpoffice/phpword
+        $composerOutput = shell_exec('composer require phpoffice/phpword 2>&1');
+
         $exitCode = Artisan::call('migrate', [
             '--force' => true,
         ]);
         $output = Artisan::output();
-        return response("Migration finished with exit code $exitCode. Output: <pre>$output</pre>");
+        return response("Composer output:<pre>$composerOutput</pre>\nMigration finished with exit code $exitCode. Output: <pre>$output</pre>");
     }
 }

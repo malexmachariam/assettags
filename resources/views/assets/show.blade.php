@@ -57,6 +57,9 @@
 
                     <div class="mt-3 d-flex gap-2 flex-wrap">
                         <a href="{{ route('assets.tag.pdf', $asset) }}" target="_blank" rel="noopener" class="btn btn-outline-danger">Show Tag PDF</a>
+                        @if(Auth::user() && (Auth::user()->role === 'super_admin' || Auth::user()->role === 'allocator'))
+                            <a href="{{ route('assets.export-word', $asset) }}" class="btn btn-outline-success">Export Word</a>
+                        @endif
                         @if(Auth::user() && (Auth::user()->role === 'super_admin') or (Auth::user()->role === 'allocator'))
                             @if($asset->allocated_to && $asset->allocated_name)
                                 <form method="POST" action="{{ route('assets.deallocate', $asset) }}" class="d-inline">
