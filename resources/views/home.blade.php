@@ -42,8 +42,11 @@
                                 <td style="max-width: 250px; white-space: pre-line;">{{ $asset->description ?? '—' }}</td>
                                 <td>
                                     <a href="{{ route('assets.show', $asset) }}" class="btn btn-sm btn-outline-info">View</a>
+                                    @if(Auth::user() && (Auth::user()->role === 'super_admin' || Auth::user()->role === 'allocator'))
+                                        <a href="{{ route('assets.export-word', $asset) }}" class="btn btn-outline-success">Export Word</a>
+                                    @endif
                                     {{-- <button type="button" class="btn btn-sm btn-info ms-1" onclick="showAssetTagModal({{ $asset->id }})">Show Tag</button> --}}
-                                    <a href="{{ route('assets.tag.pdf', $asset) }}" class="btn btn-sm btn-outline-danger ms-1" target="_blank" rel="noopener">Show Tag</a>
+                                    {{-- <a href="{{ route('assets.tag.pdf', $asset) }}" class="btn btn-sm btn-outline-danger ms-1" target="_blank" rel="noopener">Show Tag</a> --}}
                                 </td>
                             </tr>
                         @empty
